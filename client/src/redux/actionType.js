@@ -13,6 +13,11 @@ export const BLOG_LIST_REQUEST = "BLOG_LIST_REQUEST";
 export const BLOG_LIST_SUCCESS = "BLOG_LIST_SUCCESS";
 export const BLOG_LIST_FAILURE = "BLOG_LIST_FAILURE";
 
+// fetch blog by id
+export const BLOG_REQUEST = "BLOG_REQUEST";
+export const BLOG_SUCCESS = "BLOG_SUCCESS";
+export const BLOG_FAILURE = "BLOG_FAILURE";
+
 // add blog
 export const ADD_BLOG_REQUEST = "ADD_BLOG_REQUEST";
 export const ADD_BLOG_SUCCESS = "ADD_BLOG_SUCCESS";
