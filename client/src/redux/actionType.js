@@ -8,6 +8,16 @@ export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "LOGIN_FAILURE";
 
+// user logout
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST";
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+export const LOGOUT_FAILURE = "LOGOUT_FAILURE";
+
+// user authentication
+export const AUTH_REQUEST = "AUTH_REQUEST";
+export const AUTH_SUCCESS = "AUTH_SUCCESS";
+export const AUTH_FAILURE = "AUTH_FAILURE";
+
 // fetch all blogs
 export const BLOG_LIST_REQUEST = "BLOG_LIST_REQUEST";
 export const BLOG_LIST_SUCCESS = "BLOG_LIST_SUCCESS";
@@ -18,10 +28,40 @@ export const BLOG_REQUEST = "BLOG_REQUEST";
 export const BLOG_SUCCESS = "BLOG_SUCCESS";
 export const BLOG_FAILURE = "BLOG_FAILURE";
 
+// fetch comments by blog
+export const FETCH_COMMENT_REQUEST = "FETCH_COMMENT_REQUEST";
+export const FETCH_COMMENT_SUCCESS = "FETCH_COMMENT_SUCCESS";
+export const FETCH_COMMENT_FAILURE = "FETCH_COMMENT_FAILURE";
+
 // add blog
 export const ADD_BLOG_REQUEST = "ADD_BLOG_REQUEST";
 export const ADD_BLOG_SUCCESS = "ADD_BLOG_SUCCESS";
 export const ADD_BLOG_FAILURE = "ADD_BLOG_FAILURE";
+
+// user blog
+export const USER_BLOG_REQUEST = "USER_BLOG_REQUEST";
+export const USER_BLOG_SUCCESS = "USER_BLOG_SUCCESS";
+export const USER_BLOG_FAILURE = "USER_BLOG_FAILURE";
+
+// delete user blog
+export const DELETE_BLOG_REQUEST = "DELETE_BLOG_REQUEST";
+export const DELETE_BLOG_SUCCESS = "DELETE_BLOG_SUCCESS";
+export const DELETE_BLOG_FAILURE = "DELETE_BLOG_FAILURE";
+
+// add comment
+export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
+export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
+export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+// user comment
+export const USER_COMMENT_REQUEST = "USER_COMMENT_REQUEST";
+export const USER_COMMENT_SUCCESS = "USER_COMMENT_SUCCESS";
+export const USER_COMMENT_FAILURE = "USER_COMMENT_FAILURE";
+
+// delete user comment
+export const DELETE_COMMENT_REQUEST = "DELETE_COMMENT_REQUEST";
+export const DELETE_COMMENT_SUCCESS = "DELETE_COMMENT_SUCCESS";
+export const DELETE_COMMENT_FAILURE = "DELETE_COMMENT_FAILURE";
 
 // fetch category
 export const CATEGORY_LIST_REQUEST = "CATEGORY_LIST_REQUEST";

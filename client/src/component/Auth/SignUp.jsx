@@ -31,23 +31,6 @@ const SignUp = props => {
       dob: state.dob
     };
     props.userSignUp(data);
-    // try {
-    //   const res = await Axios.post("http://127.0.0.1:5000/auth/signup", {
-    //     ...this.state
-    //   });
-    //   console.log(res);
-    //   swal({
-    //     title: "Done!",
-    //     text: res.data.message,
-    //     icon: "info",
-    //     timer: 2000,
-    //     button: false
-    //   }).then(() => {
-    //     this.props.history.push("/auth/login");
-    //   });
-    // } catch (err) {
-    //   console.error(err);
-    // }
   };
 
   useEffect(() => {

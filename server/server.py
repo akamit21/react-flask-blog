@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask import request, make_response, jsonify
 from flask_mysqldb import MySQL
 
@@ -9,6 +10,7 @@ import hashlib
 import datetime
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -53,9 +55,9 @@ def check_email(email_id):
     try:
         conn = mysql.connection.cursor()
         conn.execute(
-            """SELECT COUNT(_id) AS `count` FROM `users` WHERE `email` = %s""", (email_id,))
+            """SELECT * FROM `users` WHERE `email` = %s""", (email_id,))
         row = conn.fetchone()
-        return True if row['count'] == 0 else False
+        return True if row != None else False
     except Exception as e:
         print(str(e))
         return False
@@ -104,6 +106,7 @@ def upload_file(path, f):
     print(f.filename)
     return f.filename
 
+# routes
 # signup route
 @app.route("/auth/signup", methods=["POST"])
 def user_signup():
@@ -130,7 +133,7 @@ def user_signup():
     else:
         return jsonify({"error": True, "message": email + " already exist..."}), 200
 
-
+# login route
 @app.route("/auth/login", methods=["POST"])
 def user_login():
     email = request.json["email"]
@@ -147,6 +150,22 @@ def user_login():
             return jsonify({"error": True, "message": "Login failed! Username/Password Wrong"}), 200
     else:
         return jsonify({"error": True, "message": email + " not found ..."}), 200
+
+# authenticate user
+@app.route("/auth/user", methods=["GET"])
+def get_user():
+    token = request.headers.get('Authorization')
+    print(token)
+    try:
+        token = token.split(' ')[1]
+        decode_data = jwt.decode(token, 'nS/Z9k', algorithm=['HS256'])
+        email = decode_data['email']
+        uid = decode_data['uid']
+        if check_email(email):
+            return jsonify({"error": False, "message": "SUCCESS", "email": email, "uid": uid}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": True, "message": str(e)}), 400
 
 # blog route
 # list blog
@@ -165,12 +184,28 @@ def list_blogs():
 
 # get blog by id
 @app.route("/blog/<int:id>", methods=["GET"])
-def get_blog_by_id():
+def get_blog_by_id(id):
     try:
         conn = mysql.connection.cursor()
-        conn.execute("""SELECT `blogs`.*, `users`.`username`, `categories`.`category_name`, (SELECT COUNT(`comments`.`_id`) FROM `comments` WHERE `comments`.`blog_id` = `blogs`.`_id`) AS `comment_count` FROM `blogs` LEFT JOIN `users` ON `users`.`_id` = `blogs`.`user_id` LEFT JOIN `categories` ON `categories`.`_id` = `blogs`.`category_id`""")
+        conn.execute(
+            """SELECT `blogs`.*, `users`.`username` FROM `blogs` LEFT JOIN `users` ON `users`.`_id` = `blogs`.`user_id` WHERE `blogs`.`_id` =  %s""", (id,))
+        row = conn.fetchone()
+        return jsonify({"error": False, "message": "SUCCESS", "result": row}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": True, "message": str(e)}), 400
+    finally:
+        conn.close()
+
+# get comment by blog
+@app.route("/blog/comment/<int:id>", methods=["GET"])
+def get_comment_by_blog(id):
+    try:
+        conn = mysql.connection.cursor()
+        conn.execute(
+            """SELECT `comments`.*, `users`.`username` FROM `comments` LEFT JOIN `users` ON `users`.`_id` = `comments`.`user_id` WHERE `comments`.`blog_id` =  %s""", (id,))
         rows = conn.fetchall()
-        return jsonify({"error": False, "message": "Successfully fetched all blogs!", "result": rows}), 200
+        return jsonify({"error": False, "message": "SUCCESS", "result": rows}), 200
     except Exception as e:
         print(e)
         return jsonify({"error": True, "message": str(e)}), 400
@@ -178,25 +213,18 @@ def get_blog_by_id():
         conn.close()
 
 # create blog
-
-
 @app.route("/blog/create", methods=["POST"])
 def create_blog():
-    path = "../client/public/images/blog/"
-    key = request.json["image"]
-    print(key)
-    f = request.files[key]
-    uploaded_file = upload_file(path, f)
+
     title = request.json["title"]
     blog = request.json["blog"]
-    image = uploaded_file
     category_id = request.json["category_id"]
     user_id = request.json["user_id"]
     date = datetime.datetime.now().strftime("%Y-%m-%d")
     try:
         conn = mysql.connection.cursor()
-        conn.execute("""INSERT INTO `blogs`(`blog_title`, `blog`, `image`, `category_id`, `user_id`, `published_on`) VALUES (%s, %s, %s, %s, %s, %s)""",
-                     (title, blog, image, int(category_id), int(user_id), date))
+        conn.execute("""INSERT INTO `blogs`(`blog_title`, `blog`, `category_id`, `user_id`, `published_on`) VALUES (%s, %s, %s, %s, %s)""",
+                     (title, blog, int(category_id), int(user_id), date))
         mysql.connection.commit()
         return jsonify({"error": False, "message": "Blog added successfully ..."}), 200
     except Exception as e:
@@ -205,10 +233,28 @@ def create_blog():
     finally:
         conn.close()
 
+# comments
+# add comment
+@app.route("/blog/comment/add", methods=["POST"])
+def add_comment():
+    comment = request.json["comment"]
+    # print(comment)
+    blog_id = request.json["blog_id"]
+    user_id = request.json["user_id"]
+    try:
+        conn = mysql.connection.cursor()
+        conn.execute("""INSERT INTO `comments` (`comment`, `blog_id`, `user_id`) VALUES (%s, %s, %s)""",
+                     (comment, blog_id, user_id))
+        mysql.connection.commit()
+        return jsonify({"error": False, "message": "Comment added successfully ..."}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": True, "message": str(e)}), 400
+    finally:
+        conn.close()
+
 # category
 # fetch all category
-
-
 @app.route("/category/list", methods=["GET"])
 def category_list():
     try:
