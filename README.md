@@ -30,6 +30,8 @@ npm start # or yarn start
 First import database
 
 ```bash
+export FLASK_DEV=development
+export FLASK_APP=server.py
 flask run
 ```
 

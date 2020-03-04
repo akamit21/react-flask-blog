@@ -5,7 +5,7 @@ import {
 } from "../actionType";
 
 let initialState = {
-  isLoading: false,
+  isLoading: true,
   error: false,
   response: null,
   categories: []

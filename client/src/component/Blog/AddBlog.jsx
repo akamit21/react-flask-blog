@@ -5,19 +5,42 @@ import { fetchAllcategory } from "../../redux/actions/categoryAction";
 import { Container, Form, Button } from "react-bootstrap";
 // import CKEditor from "@ckeditor/ckeditor5-react";
 // import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import Loader from "../Common/Loader";
+import swal from "sweetalert";
 import Style from "./Blog.module.css";
 
 const AddBlog = props => {
   const [state, setstate] = useState({
     category_id: "",
     title: "",
-    blog: "",
-    image: ""
+    blog: ""
   });
 
   useEffect(() => {
-    props.getAllCategory();
-  }, []);
+    const { error, response, getAllCategory } = props;
+    getAllCategory();
+    if (response) {
+      if (error) {
+        swal({
+          title: "Failure",
+          text: response,
+          icon: "warning",
+          timer: 800,
+          button: false
+        });
+      } else {
+        swal({
+          title: "Success",
+          text: response,
+          icon: "success",
+          timer: 800,
+          button: false
+        }).then(() => {
+          alert("aa");
+        });
+      }
+    }
+  }, [props.response]);
 
   const handleChange = e => {
     setstate({
@@ -32,14 +55,15 @@ const AddBlog = props => {
       category_id: state.category_id,
       title: state.title,
       blog: state.blog,
-      image: state.image,
-      user_id: 1
+      user_id: props.uid
     };
     props.addNewBlog(data);
   };
 
-  const { categoryList } = props;
-  return (
+  const { formLoading, categoryList } = props;
+  return formLoading ? (
+    <Loader />
+  ) : (
     <Container className="section-padding">
       <Form
         onSubmit={e => handleSubmit(e)}
@@ -137,7 +161,11 @@ const AddBlog = props => {
 };
 
 const mapStateToProps = state => ({
-  categoryList: state.categoryReducer.categories
+  formLoading: state.blogReducer.formLoading,
+  error: state.blogReducer.error,
+  response: state.blogReducer.response,
+  categoryList: state.categoryReducer.categories,
+  uid: state.authReducer.uid
 });
 const mapDispatchToProps = dispatch => ({
   getAllCategory: () => dispatch(fetchAllcategory()),

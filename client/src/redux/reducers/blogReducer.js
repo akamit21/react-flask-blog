@@ -11,7 +11,8 @@ import {
 } from "../actionType";
 
 let initialState = {
-  isLoading: true,
+  formLoading: false,
+  pageLoading: true,
   error: false,
   response: null,
   blogsList: [],
@@ -25,13 +26,12 @@ export const blogReducer = (state = initialState, action) => {
     case BLOG_LIST_REQUEST: {
       return {
         ...state,
-        isLoading: true
+        pageLoading: true
       };
     }
     case BLOG_LIST_SUCCESS: {
       return {
         ...state,
-        isLoading: false,
         error: false,
         response: action.payload.message,
         blogsList: [...action.payload.result]
@@ -40,7 +40,7 @@ export const blogReducer = (state = initialState, action) => {
     case BLOG_LIST_FAILURE: {
       return {
         ...state,
-        isLoading: false,
+        pageLoading: false,
         error: true,
         response: action.payload.message
       };
@@ -49,13 +49,13 @@ export const blogReducer = (state = initialState, action) => {
     case BLOG_REQUEST: {
       return {
         ...state,
-        isLoading: true
+        pageLoading: true
       };
     }
     case BLOG_SUCCESS: {
       return {
         ...state,
-        isLoading: false,
+        pageLoading: false,
         error: false,
         response: action.payload.message,
         blog: action.payload.result
@@ -64,7 +64,7 @@ export const blogReducer = (state = initialState, action) => {
     case BLOG_FAILURE: {
       return {
         ...state,
-        isLoading: false,
+        pageLoading: false,
         error: true,
         response: action.payload.message
       };
@@ -73,19 +73,23 @@ export const blogReducer = (state = initialState, action) => {
     case ADD_BLOG_REQUEST: {
       return {
         ...state,
-        isLoading: true
+        formLoading: true
       };
     }
     case ADD_BLOG_SUCCESS: {
       return {
         ...state,
-        isLoading: false
+        formLoading: false,
+        error: false,
+        response: action.payload.message
       };
     }
     case ADD_BLOG_FAILURE: {
       return {
         ...state,
-        isLoading: false
+        formLoading: false,
+        error: true,
+        response: action.payload.message
       };
     }
     default:

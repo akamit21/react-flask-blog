@@ -226,9 +226,9 @@ def create_blog():
         conn.execute("""INSERT INTO `blogs`(`blog_title`, `blog`, `category_id`, `user_id`, `published_on`) VALUES (%s, %s, %s, %s, %s)""",
                      (title, blog, int(category_id), int(user_id), date))
         mysql.connection.commit()
-        return jsonify({"error": False, "message": "Blog added successfully ..."}), 200
+        return jsonify({"error": False, "message": "Blog added successfully ..."}), 201
     except Exception as e:
-        print(e)
+        print(str(e))
         return jsonify({"error": True, "message": str(e)}), 400
     finally:
         conn.close()
@@ -262,7 +262,7 @@ def category_list():
         conn.execute(
             """SELECT _id, category_name FROM `categories` WHERE `is_active` = '1' AND `is_deleted` = '0'""")
         rows = conn.fetchall()
-        return jsonify({"error": False, "message": "Success!", "result": rows}), 200
+        return jsonify({"error": False, "message": "Successfully fetched all categories!", "result": rows}), 200
     except Exception as e:
         print(e)
         return jsonify({"error": True, "message": str(e)}), 400
